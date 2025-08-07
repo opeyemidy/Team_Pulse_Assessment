@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination'
-import { TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { TeamMember } from '@/interfaces'
-import { Plus, Search, Table, Loader2, Trash2 } from 'lucide-react'
+import { Plus, Search, Loader2, Trash2 } from 'lucide-react'
 import React, { SetStateAction } from 'react'
 
 interface MembersSectionProps {
@@ -106,6 +106,7 @@ export default function MembersSection({
                         ))}
                     </TableBody>
                 </Table>
+
 
                 {/* Pagination */}
                 {totalPages > 1 && (

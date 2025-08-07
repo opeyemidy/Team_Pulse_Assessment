@@ -1,12 +1,12 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@radix-ui/react-select'
-import { Separator } from '@radix-ui/react-separator'
-import { Switch } from '@radix-ui/react-switch'
-import { SettingsIcon } from 'lucide-react'
 import React from 'react'
 import { frequencyOptions } from './constants'
 import { AdminSettings } from '@/interfaces'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Separator } from '@/components/ui/separator'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SettingsIcon } from 'lucide-react'
 
 interface CheckInSettingsProps {
     handleSettingChange: (key: keyof AdminSettings, value: AdminSettings[keyof AdminSettings]) => void
