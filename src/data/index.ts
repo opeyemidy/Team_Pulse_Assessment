@@ -1,10 +1,62 @@
 import { Team } from '../interfaces';
 
+export const members = [
+  {
+    id: '1',
+    name: 'Alice Johnson',
+    email: 'alice@company.com',
+    sentiment: 'happy',
+    joinedDate: '2024-01-15',
+    teamId: '1',
+  },
+  {
+    id: '2',
+    name: 'Bob Smith',
+    email: 'bob@company.com',
+    sentiment: 'neutral',
+    joinedDate: '2024-02-01',
+    teamId: '1',
+  },
+  {
+    id: '3',
+    name: 'Carol Davis',
+    email: 'carol@company.com',
+    sentiment: 'happy',
+    joinedDate: '2024-01-20',
+    teamId: '1',
+  },
+  {
+    id: '4',
+    name: 'David Wilson',
+    email: 'david@company.com',
+    sentiment: 'sad',
+    joinedDate: '2024-03-10',
+    teamId: '1',
+  },
+  {
+    id: '5',
+    name: 'Eva Brown',
+    email: 'eva@company.com',
+    sentiment: 'happy',
+    joinedDate: '2024-02-15',
+    teamId: '1',
+  },
+  {
+    id: '6',
+    name: 'Frank Miller',
+    email: 'frank@company.com',
+    sentiment: 'neutral',
+    joinedDate: '2024-01-30',
+    teamId: '1',
+  },
+];
+
 export const mockTeams: Team[] = [
   {
     id: '1',
     name: 'Engineering',
-    memberCount: 24,
+    description: 'Team responsible for product development and innovation',
+    memberCount: members.filter((member) => member.teamId === '1').length,
     averageSentiment: 78,
     sentimentTrend: 'up',
     lastUpdated: '2 hours ago',
@@ -12,7 +64,8 @@ export const mockTeams: Team[] = [
   {
     id: '2',
     name: 'Product Design',
-    memberCount: 12,
+    description: 'Team responsible for product design and development',
+    memberCount: members.filter((member) => member.teamId === '2').length,
     averageSentiment: 85,
     sentimentTrend: 'up',
     lastUpdated: '4 hours ago',
@@ -20,7 +73,8 @@ export const mockTeams: Team[] = [
   {
     id: '3',
     name: 'Marketing',
-    memberCount: 18,
+    description: 'Team responsible for marketing and sales',
+    memberCount: members.filter((member) => member.teamId === '3').length,
     averageSentiment: 62,
     sentimentTrend: 'stable',
     lastUpdated: '1 hour ago',
@@ -28,7 +82,8 @@ export const mockTeams: Team[] = [
   {
     id: '4',
     name: 'Sales',
-    memberCount: 15,
+    description: 'Team responsible for sales and customer success',
+    memberCount: members.filter((member) => member.teamId === '4').length,
     averageSentiment: 45,
     sentimentTrend: 'down',
     lastUpdated: '30 minutes ago',
@@ -36,7 +91,8 @@ export const mockTeams: Team[] = [
   {
     id: '5',
     name: 'Customer Success',
-    memberCount: 8,
+    description: 'Team responsible for customer success and support',
+    memberCount: members.filter((member) => member.teamId === '5').length,
     averageSentiment: 92,
     sentimentTrend: 'up',
     lastUpdated: '6 hours ago',

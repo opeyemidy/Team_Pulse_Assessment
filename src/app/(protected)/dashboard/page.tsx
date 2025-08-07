@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Dashboard from ".";
+import Dashboard from "./index";
 
 export const metadata: Metadata = {
     title: "TeamPulse - Dashboard",

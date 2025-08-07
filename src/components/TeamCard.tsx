@@ -5,7 +5,7 @@ import { Team } from "@/interfaces"
 
 interface TeamCardProps {
   team: Team
-  onClick: () => void
+  onClick: ({ name, id }: { name: string, id: string }) => void
 }
 
 export function TeamCard({ team, onClick }: TeamCardProps) {
@@ -29,7 +29,7 @@ export function TeamCard({ team, onClick }: TeamCardProps) {
   return (
     <Card
       className="cursor-pointer transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 bg-gradient-card border-0 shadow-card"
-      onClick={onClick}
+      onClick={() => onClick({ name: team.name, id: team.id })}
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">

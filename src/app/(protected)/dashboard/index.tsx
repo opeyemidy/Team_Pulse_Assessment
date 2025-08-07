@@ -31,6 +31,7 @@ export default function Dashboard() {
     const handleAddTeam = (newTeamData: { name: string; description: string; }) => {
         const newTeam: Team = {
             id: (teams.length + 1).toString(),
+            description: newTeamData.description,
             name: newTeamData.name,
             averageSentiment: 50, // Default neutral sentiment
             sentimentTrend: "stable",
@@ -40,8 +41,8 @@ export default function Dashboard() {
         setTeams(prev => [...prev, newTeam])
     }
 
-    const handleTeamClick = (teamId: string) => {
-        router.push(`/teams/${teamId}`)
+    const handleTeamClick = (name: string, teamId: string) => {
+        router.push(`/teams/${name.toLowerCase().replace(/\s+/g, "-")}.${teamId}`)
     }
 
     const calculateOverallStats = () => {
@@ -89,7 +90,7 @@ export default function Dashboard() {
                             <TeamCard
                                 key={team.id}
                                 team={team}
-                                onClick={() => handleTeamClick(team.id)}
+                                onClick={() => handleTeamClick(team.name, team.id)}
                             />
                         ))}
                     </div>
