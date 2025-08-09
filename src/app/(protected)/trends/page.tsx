@@ -8,31 +8,11 @@ import SentimentChartView from "./SentimentChartView"
 import TeamChartView from "./TeamChartView"
 import SummaryStats from "./SummaryStats"
 import ChartControl from "./ChartControl"
+import useRequest from "@/hooks/use-swr"
+import { AnalyticsData } from "@/interfaces"
+import TrendsLoader from "./TrendsLoader"
 
-// Mock data for sentiment trends
-const generateTrendData = (days: number) => {
-    const data = []
-    const today = new Date()
 
-    for (let i = days - 1; i >= 0; i--) {
-        const date = new Date(today)
-        date.setDate(date.getDate() - i)
-
-        data.push({
-            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            fullDate: date.toISOString().split('T')[0],
-            happy: Math.floor(Math.random() * 30) + 40,
-            neutral: Math.floor(Math.random() * 20) + 25,
-            sad: Math.floor(Math.random() * 15) + 5,
-            teamA: Math.floor(Math.random() * 25) + 60,
-            teamB: Math.floor(Math.random() * 20) + 55,
-            teamC: Math.floor(Math.random() * 30) + 45,
-            teamD: Math.floor(Math.random() * 25) + 50,
-        })
-    }
-
-    return data
-}
 
 
 
@@ -41,8 +21,9 @@ export default function Trends() {
     const [timeRange, setTimeRange] = useState('7')
     const [viewMode, setViewMode] = useState<'sentiment' | 'teams'>('sentiment')
 
-    const trendData = generateTrendData(parseInt(timeRange))
+    const { data, isLoading } = useRequest<{ data: AnalyticsData[] }>(`/analytics?days=${timeRange}`)
 
+    const trendData = data?.data || []
     const handleExport = () => {
         const csvContent = [
             ['Date', 'Happy', 'Neutral', 'Sad'].join(','),
@@ -58,10 +39,13 @@ export default function Trends() {
     }
 
     const getAverageSentiment = () => {
+        if (!trendData) return '0'
         const total = trendData.reduce((acc, day) => acc + day.happy + day.neutral + day.sad, 0)
         const happy = trendData.reduce((acc, day) => acc + day.happy, 0)
         return ((happy / total) * 100).toFixed(1)
     }
+
+    if (isLoading) return <TrendsLoader />
 
     return (
         <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { AdminSettings } from '@/interfaces';
+import { Settings } from '@/generated/prisma/client';
 
 export const frequencyOptions = [
   { value: 'daily', label: 'Daily' },
@@ -13,10 +13,10 @@ export const timeOptions = [
   { value: '17:00', label: '5:00 PM' },
 ];
 
-export const defaultSettings: AdminSettings = {
+export const defaultSettings: Omit<Settings, 'id' | 'updatedAt'> = {
   checkInsEnabled: true,
-  checkInFrequency: 'daily',
-  autoReminders: true,
+  frequency: 'daily',
+  automaticReminders: true,
   reminderTime: '09:00',
-  allowAnonymous: false,
+  anonymousEnabled: false,
 };

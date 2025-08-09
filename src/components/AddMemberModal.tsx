@@ -1,5 +1,3 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -7,46 +5,39 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { SentimentSelector } from "@/components/SentimentSelector"
-import { toast } from "@/hooks/use-toast"
+import { createMemberSchema } from "@/schemas"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { createMember } from "@/actions"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
+import FormSubmitButton from "./FormSubmitButton"
+import { Sentiment } from "@/generated/prisma/client"
+import { useParams } from "next/navigation"
 
 interface AddMemberModalProps {
   isOpen: boolean
   onClose: () => void
-  onAdd: (member: { name: string; email: string; sentiment: "happy" | "neutral" | "sad" }) => void
 }
 
-export function AddMemberModal({ isOpen, onClose, onAdd }: AddMemberModalProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    sentiment: "neutral" as "happy" | "neutral" | "sad"
-  })
+type CreateMemberForm = z.infer<typeof createMemberSchema>
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      onAdd(formData)
-      setFormData({ name: "", email: "", sentiment: "neutral" })
-      onClose()
-    } catch {
-      toast({
-        title: "Error",
-        description: "Failed to add member."
-      })
-    } finally {
-      setIsLoading(false)
+export function AddMemberModal({ isOpen, onClose }: AddMemberModalProps) {
+
+  const { slug } = useParams();
+  const form = useForm<CreateMemberForm>({
+    resolver: zodResolver(createMemberSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      sentiment: Sentiment.NEUTRAL
     }
-
-  }
+  })
+  const { control, formState: { isValid, isSubmitting } } = form
 
   const handleClose = () => {
-    setFormData({ name: "", email: "", sentiment: "neutral" })
+    form.reset()
     onClose()
   }
 
@@ -57,47 +48,70 @@ export function AddMemberModal({ isOpen, onClose, onAdd }: AddMemberModalProps) 
           <DialogTitle>Add New Team Member</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter member name"
-              required
+        <Form {...form}>
+          <form action={createMember} className="space-y-4">
+            <FormField
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter member name"
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="Enter member email"
-              required
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Enter member email"
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label>Initial Sentiment</Label>
-            <SentimentSelector
-              value={formData.sentiment}
-              onChange={(sentiment) => setFormData(prev => ({ ...prev, sentiment }))}
+            <FormField
+              control={control}
+              name="sentiment"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Initial Sentiment</FormLabel>
+                  <FormControl>
+                    <div>
+                      <SentimentSelector
+                        value={field.value as Sentiment}
+                        onChange={(sentiment) => field.onChange(sentiment)}
+                      />
+                      <input type="hidden" name="sentiment" value={field.value} />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Member"}
-            </Button>
-          </div>
-        </form>
+            <input type="hidden" name="slug" value={slug as string} />
+            <div className="flex justify-end gap-2 pt-4">
+              <FormSubmitButton label="Add Member" disabled={!isValid} />
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

@@ -4,32 +4,33 @@ import { Smile, Meh, Frown, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import { Sentiment } from "@/generated/prisma/client"
 
 interface SentimentSelectorProps {
-  value: "happy" | "neutral" | "sad"
-  onChange: (sentiment: "happy" | "neutral" | "sad") => void
+  value: Sentiment
+  onChange: (sentiment: Sentiment) => void
   className?: string
   disabled?: boolean
   isLoading?: boolean
 }
 
 export function SentimentSelector({ value, onChange, className, disabled = false, isLoading = false }: SentimentSelectorProps) {
-  const [clickedSentiment, setClickedSentiment] = useState<"happy" | "neutral" | "sad" | null>(null)
+  const [clickedSentiment, setClickedSentiment] = useState<Sentiment | null>(null)
   const sentiments = [
     {
-      key: "happy" as const,
+      key: Sentiment.HAPPY,
       icon: Smile,
       color: "text-sentiment-excellent",
       bgColor: "bg-sentiment-excellent/10"
     },
     {
-      key: "neutral" as const,
+      key: Sentiment.NEUTRAL,
       icon: Meh,
       color: "text-sentiment-neutral",
       bgColor: "bg-sentiment-neutral/10"
     },
     {
-      key: "sad" as const,
+      key: Sentiment.SAD,
       icon: Frown,
       color: "text-sentiment-poor",
       bgColor: "bg-sentiment-poor/10"
@@ -47,6 +48,7 @@ export function SentimentSelector({ value, onChange, className, disabled = false
             key={sentiment.key}
             variant="ghost"
             size="sm"
+            type="button"
             onClick={() => {
               setClickedSentiment(sentiment.key)
               onChange(sentiment.key)

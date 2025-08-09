@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Team } from '@/interfaces'
+import { Team } from '@/generated/prisma/client'
 import React from 'react'
 
 interface TeamStatsProps {
-    team: Team
+    team: Team & { membersCount: number }
 }
 
 export default function TeamStats({ team }: TeamStatsProps) {
@@ -15,7 +15,7 @@ export default function TeamStats({ team }: TeamStatsProps) {
                     <CardTitle className="text-sm font-medium">Total Members</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{team.memberCount}</div>
+                    <div className="text-2xl font-bold">{team.membersCount}</div>
                 </CardContent>
             </Card>
 
@@ -33,11 +33,17 @@ export default function TeamStats({ team }: TeamStatsProps) {
                     <CardTitle className="text-sm font-medium">Team Health</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Badge variant={team.averageSentiment >= 70 ? "default" : "secondary"}>
-                        {team.averageSentiment >= 70 ? "Healthy" : "Needs Attention"}
-                    </Badge>
+                    {team.membersCount > 0 && <div className="flex items-center gap-2">
+                        <span className="text-lg">
+                            {team.averageSentiment >= 80 ? "🟢" : team.averageSentiment >= 60 ? "🟡" : team.averageSentiment >= 40 ? "🟠" : "🔴"}
+                        </span>
+                        <Badge variant={team.averageSentiment >= 80 ? "default" : team.averageSentiment >= 60 ? "secondary" : team.averageSentiment >= 40 ? "destructive" : "outline"}>
+                            {team.averageSentiment >= 80 ? "Healthy" : team.averageSentiment >= 60 ? "Fair / Monitor" : team.averageSentiment >= 40 ? "Needs Attention" : "Critical"}
+                        </Badge>
+                    </div>}
+                    {team.membersCount === 0 && <div className="text-sm text-gray-500">No members yet</div>}
                 </CardContent>
             </Card>
         </div>
-    )
+    );
 }

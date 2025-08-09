@@ -1,30 +1,19 @@
-import { Users, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { Users, TrendingUp } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Team } from "@/interfaces"
+import { Team } from "@/generated/prisma/client"
+import { formatRelativeTime } from "@/lib/utils"
+import { getProgressBarGradient, getSentimentColor, getSentimentLabel } from "@/helpers"
+
 
 interface TeamCardProps {
-  team: Team
+  team: Team & { membersCount: number, sentimentTrend?: string }
   onClick: ({ name, id }: { name: string, id: string }) => void
 }
 
-export function TeamCard({ team, onClick }: TeamCardProps) {
-  const getSentimentColor = (score: number) => {
-    if (score >= 80) return "sentiment-excellent"
-    if (score >= 60) return "sentiment-good"
-    if (score >= 40) return "sentiment-neutral"
-    return "sentiment-poor"
-  }
+export function TeamCard({ team, onClick, }: TeamCardProps) {
 
-  const getSentimentLabel = (score: number) => {
-    if (score >= 80) return "Excellent"
-    if (score >= 60) return "Good"
-    if (score >= 40) return "Neutral"
-    return "Needs Attention"
-  }
-
-  const TrendIcon = team.sentimentTrend === "up" ? TrendingUp :
-    team.sentimentTrend === "down" ? TrendingDown : Minus
+  const TrendIcon = TrendingUp
 
   return (
     <Card
@@ -38,7 +27,7 @@ export function TeamCard({ team, onClick }: TeamCardProps) {
           </CardTitle>
           <Badge variant="secondary" className="text-xs">
             <Users className="h-3 w-3 mr-1" />
-            {team.memberCount || 0}
+            {team.membersCount || 0}
           </Badge>
         </div>
       </CardHeader>
@@ -83,13 +72,13 @@ export function TeamCard({ team, onClick }: TeamCardProps) {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${team.averageSentiment}%`,
-                backgroundColor: `hsl(var(--${getSentimentColor(team.averageSentiment)}))`
+                background: getProgressBarGradient(team.averageSentiment)
               }}
             />
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Last updated: {team.lastUpdated}
+            Last updated: {formatRelativeTime(new Date(team.updatedAt).toISOString())}
           </p>
         </div>
       </CardContent>

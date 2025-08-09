@@ -1,11 +1,11 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { AdminSettings } from '@/interfaces'
+import { Settings as PrismaSettings } from '@/generated/prisma/client'
 import React from 'react'
 import { timeOptions } from './constants'
 
 interface SettingsSummaryProps {
-    settings: AdminSettings
+    settings: Partial<PrismaSettings>
 }
 
 
@@ -31,15 +31,15 @@ export default function SettingsSummary({ settings }: SettingsSummaryProps) {
                     <div className="space-y-2">
                         <Label className="text-sm font-medium">Frequency</Label>
                         <p className="text-sm text-muted-foreground capitalize">
-                            {settings.checkInFrequency}
+                            {settings.frequency}
                         </p>
                     </div>
 
                     <div className="space-y-2">
                         <Label className="text-sm font-medium">Reminders</Label>
                         <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${settings.autoReminders ? 'bg-success' : 'bg-muted'}`} />
-                            <span className="text-sm">{settings.autoReminders ? 'Enabled' : 'Disabled'}</span>
+                            <div className={`w-2 h-2 rounded-full ${settings.automaticReminders ? 'bg-success' : 'bg-muted'}`} />
+                            <span className="text-sm">{settings.automaticReminders ? 'Enabled' : 'Disabled'}</span>
                         </div>
                     </div>
 

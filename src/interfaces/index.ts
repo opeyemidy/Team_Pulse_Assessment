@@ -1,8 +1,10 @@
+import { Sentiment } from '@/generated/prisma/client';
+
 export interface TeamMember {
   id: string;
   name: string;
   email: string;
-  sentiment: 'happy' | 'neutral' | 'sad';
+  sentiment: Sentiment;
   joinedDate: string;
   teamId: string;
 }
@@ -30,4 +32,45 @@ export interface AdminSettings {
   autoReminders: boolean;
   reminderTime: string;
   allowAnonymous: boolean;
+}
+
+export interface DashboardStats {
+  totalTeams: number;
+  totalMembers: number;
+  averageSentiment: number;
+}
+
+export interface TeamAverage {
+  teamId: string;
+  averageSentiment: number;
+}
+
+export const sentimentScores: Record<Sentiment, number> = {
+  HAPPY: 100,
+  NEUTRAL: 50,
+  SAD: 0,
+};
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+export type Args = { params: Promise<{ [key: string]: string }> };
+
+export interface AnalyticsData {
+  date: string;
+  fullDate: string;
+  happy: number;
+  neutral: number;
+  sad: number;
+  teamA: number;
+  teamB: number;
+  teamC: number;
+  teamD: number;
+}
+
+export interface SignInError {
+  success: boolean;
+  errors?: Record<string, string[]>;
 }

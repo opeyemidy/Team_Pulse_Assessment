@@ -1,47 +1,99 @@
 "use client";
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { Save, RotateCcw, Settings as SettingsIcon } from "lucide-react"
-import { AdminSettings } from "@/interfaces";
 import { defaultSettings } from "./constants";
 import CheckInSettings from "./CheckInSettings";
 import NotificationSettings from "./Notification";
 import SettingsSummary from "./SettingsSummary";
+import useRequest from "@/hooks/use-swr";
+import { Settings as PrismaSettings } from "@/generated/prisma/client";
+import { adminSettings } from "@/app/constants";
+import { api } from "@/services";
+import { AxiosResponse } from "axios";
+import { useSWRConfig } from "swr";
+import SettingsLoader from "./SettingsLoader";
 
 export default function Settings() {
-    const [settings, setSettings] = useState<AdminSettings>(defaultSettings)
     const [hasChanges, setHasChanges] = useState(false)
     const { toast } = useToast()
-
-    const handleSettingChange = <K extends keyof AdminSettings>(
+    const { mutate } = useSWRConfig()
+    const { data, isLoading } = useRequest<{ data: PrismaSettings }>('/settings', {
+        revalidateOnFocus: false,
+    })
+    const [settings, setSettings] = useState<Partial<PrismaSettings>>(adminSettings)
+    const handleSettingChange = <K extends keyof PrismaSettings>(
         key: K,
-        value: AdminSettings[K]
+        value: PrismaSettings[K]
     ) => {
         setSettings(prev => ({ ...prev, [key]: value }))
         setHasChanges(true)
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         // Simulate API call to save settings
-        setTimeout(() => {
+        const res = await api.put('/settings', settings)
+        if (res.status === 200) {
             toast({
                 title: "Settings saved",
                 description: "Your settings have been updated successfully.",
             })
             setHasChanges(false)
-        }, 500)
+            await mutate('/settings', (prev: AxiosResponse<{ data: PrismaSettings }> | undefined) => {
+                if (!prev) return prev
+                return {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        data: {
+                            ...prev.data.data,
+                            ...settings
+                        }
+                    }
+                }
+            }, {
+                revalidate: false
+            })
+        }
     }
 
-    const handleReset = () => {
-        setSettings(defaultSettings)
-        setHasChanges(true)
-        toast({
-            title: "Settings reset",
-            description: "All settings have been reset to default values.",
-        })
+    const handleReset = async () => {
+        try {
+            await api.put('/settings', { ...defaultSettings, id: data?.data.id })
+            await mutate('/settings', (prev: AxiosResponse<{ data: PrismaSettings }> | undefined) => {
+                if (!prev) return prev
+                return {
+                    ...prev,
+                    data: { ...prev.data, data: { ...prev.data.data, ...defaultSettings } }
+                }
+            }, {
+                revalidate: false
+            })
+            toast({
+                title: "Settings reset",
+                description: "All settings have been reset to default values.",
+            })
+        } catch (error) {
+            console.error(error)
+            toast({
+                title: "Error resetting settings",
+                description: "Please try again.",
+            })
+        }
+
+    }
+
+    useEffect(() => {
+        if (data?.data && !isLoading) {
+            setSettings(data.data)
+        }
+    }, [data, isLoading])
+
+    if (isLoading) {
+        return <SettingsLoader />
     }
 
     return (
@@ -62,13 +114,13 @@ export default function Settings() {
                             Unsaved changes
                         </Badge>
                     )}
-                    <Button onClick={handleReset} variant="outline" size="sm">
+                    <Button onClick={handleReset} variant="outline" size="sm" disabled={isLoading}>
                         <RotateCcw className="w-4 h-4 mr-2" />
                         Reset to Default
                     </Button>
                     <Button
                         onClick={handleSave}
-                        disabled={!hasChanges}
+                        disabled={!hasChanges || isLoading}
                         className="bg-primary hover:bg-primary/90"
                     >
                         <Save className="w-4 h-4 mr-2" />

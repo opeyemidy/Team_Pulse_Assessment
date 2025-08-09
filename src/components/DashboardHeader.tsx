@@ -1,3 +1,5 @@
+"use client"
+
 import { useRouter } from "next/navigation";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
@@ -5,13 +7,11 @@ import { Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { logoutAction } from "@/actions/auth";
 
 
 export function DashboardHeader() {
     const router = useRouter()
-    const handleLogout = () => {
-        router.push("/login")
-    }
     return (
         <header className="h-16 border-b border-border bg-card flex items-center px-6 shadow-sm">
             <SidebarTrigger className="text-foreground hover:bg-accent" />
@@ -47,9 +47,16 @@ export function DashboardHeader() {
                                     Settings
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout}>
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    Log out
+                                <DropdownMenuItem asChild>
+                                    <form action={logoutAction} className="p-0 m-0">
+                                        <button
+                                            type="submit"
+                                            className="flex gap-2 w-full cursor-pointer"
+                                        >
+                                            <LogOut className="mr-2 h-4 w-4" />
+                                            Log out
+                                        </button>
+                                    </form>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

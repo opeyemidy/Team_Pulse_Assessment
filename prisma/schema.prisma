@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+  seed     = "tsx prisma/seed.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  averageSentiment Int @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  members     Member[]
+}
+model Member {
+  id        String              @id @default(cuid())
+  name      String
+  email     String              @unique
+  sentiment Sentiment           @default(NEUTRAL)
+  teamId    String
+  team      Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+}
+enum Sentiment {
+  HAPPY
+  NEUTRAL
+  SAD
+}
+model Settings {
+  id                    String   @id @default(cuid())
+  checkInsEnabled       Boolean  @default(true)
+  frequency             String   @default("weekly") // daily, weekly, monthly
+  anonymousEnabled      Boolean  @default(false)
+  reminderTime          String   @default("9:00") // 9:00, 12:00, 15:00, 17:00
+  automaticReminders    Boolean  @default(false)
+  updatedAt             DateTime @updatedAt
+}

@@ -6,11 +6,11 @@ import { Bell, Clock } from 'lucide-react'
 import React from 'react'
 import { timeOptions } from './constants'
 import { Label } from '@/components/ui/label'
-import { AdminSettings } from '@/interfaces'
+import { Settings as PrismaSettings } from '@/generated/prisma/client'
 
 interface NotificationSettingsProps {
-    handleSettingChange: (key: keyof AdminSettings, value: AdminSettings[keyof AdminSettings]) => void
-    settings: AdminSettings
+    handleSettingChange: (key: keyof PrismaSettings, value: PrismaSettings[keyof PrismaSettings]) => void
+    settings: Partial<PrismaSettings>
 }
 
 export default function NotificationSettings({ handleSettingChange, settings }: NotificationSettingsProps) {
@@ -35,8 +35,8 @@ export default function NotificationSettings({ handleSettingChange, settings }: 
                     </div>
                     <Switch
                         id="auto-reminders"
-                        checked={settings.autoReminders}
-                        onCheckedChange={(checked) => handleSettingChange('autoReminders', checked)}
+                        checked={settings.automaticReminders}
+                        onCheckedChange={(checked) => handleSettingChange('automaticReminders', checked)}
                         disabled={!settings.checkInsEnabled}
                     />
                 </div>
@@ -51,7 +51,7 @@ export default function NotificationSettings({ handleSettingChange, settings }: 
                     <Select
                         value={settings.reminderTime}
                         onValueChange={(value) => handleSettingChange('reminderTime', value)}
-                        disabled={!settings.checkInsEnabled || !settings.autoReminders}
+                        disabled={!settings.checkInsEnabled || !settings.automaticReminders}
                     >
                         <SelectTrigger>
                             <SelectValue />

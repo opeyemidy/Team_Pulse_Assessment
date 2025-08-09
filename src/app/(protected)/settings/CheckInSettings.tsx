@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import React from 'react'
 import { frequencyOptions } from './constants'
-import { AdminSettings } from '@/interfaces'
+import { Settings as PrismaSettings } from '@/generated/prisma/client'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { SettingsIcon } from 'lucide-react'
 
 interface CheckInSettingsProps {
-    handleSettingChange: (key: keyof AdminSettings, value: AdminSettings[keyof AdminSettings]) => void
-    settings: AdminSettings
+    handleSettingChange: (key: keyof PrismaSettings, value: PrismaSettings[keyof PrismaSettings]) => void
+    settings: Partial<PrismaSettings>
 }
 
 export default function CheckInSettings({ handleSettingChange, settings }: CheckInSettingsProps) {
@@ -45,9 +45,9 @@ export default function CheckInSettings({ handleSettingChange, settings }: Check
                 <div className="space-y-3">
                     <Label htmlFor="frequency">Check-in Frequency</Label>
                     <Select
-                        value={settings.checkInFrequency}
+                        value={settings.frequency}
                         onValueChange={(value: 'daily' | 'weekly' | 'monthly') =>
-                            handleSettingChange('checkInFrequency', value)
+                            handleSettingChange('frequency', value)
                         }
                         disabled={!settings.checkInsEnabled}
                     >
@@ -76,8 +76,8 @@ export default function CheckInSettings({ handleSettingChange, settings }: Check
                     </div>
                     <Switch
                         id="anonymous"
-                        checked={settings.allowAnonymous}
-                        onCheckedChange={(checked) => handleSettingChange('allowAnonymous', checked)}
+                        checked={settings.anonymousEnabled}
+                        onCheckedChange={(checked) => handleSettingChange('anonymousEnabled', checked)}
                         disabled={!settings.checkInsEnabled}
                     />
                 </div>

@@ -12,10 +12,9 @@ export async function generateMetadata(
     const slug = (await params).slug
     const name = slug.split(".").slice(0, -1).join(" ").replace(/-/g, " ")
     const teamId = slug.split(".").pop()
-    if (!teamId || isNaN(Number(teamId))) {
+    if (!teamId) {
         throw notFound()
     }
-    console.log(name, teamId)
     return {
         title: `TeamPulse - ${name}`,
         description: `View details for team ${teamId}`,
@@ -25,9 +24,8 @@ export async function generateMetadata(
 export default async function TeamPage({ params }: Props) {
     const { slug } = await params
     const teamId = slug.split(".").pop()
-    if (!teamId || isNaN(Number(teamId))) {
+    if (!teamId) {
         throw notFound()
     }
-    console.log('teamId', teamId)
     return <TeamDetails teamId={teamId!} />
 }
