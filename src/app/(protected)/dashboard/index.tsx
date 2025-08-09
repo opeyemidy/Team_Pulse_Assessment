@@ -20,9 +20,13 @@ interface TeamWithMembers extends Team {
 export default function Dashboard() {
     const router = useRouter()
 
-    const { data: dashboardStats, isLoading: isDashboardStatsLoading } = useRequest<{ data: DashboardStats }>('/dashboard/stats')
+    const { data: dashboardStats, isLoading: isDashboardStatsLoading } = useRequest<{ data: DashboardStats }>('/dashboard/stats', {
+        revalidateOnFocus: false,
+    })
 
-    const { data: teamsData, isLoading: isTeamsLoading } = useRequest<{ data: TeamWithMembers[] }>('/teams')
+    const { data: teamsData, isLoading: isTeamsLoading } = useRequest<{ data: TeamWithMembers[] }>('/teams', {
+        revalidateOnFocus: false,
+    })
     //default sort by createdAt descending
     const teams = teamsData?.data.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()) || []
 

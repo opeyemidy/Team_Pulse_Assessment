@@ -92,8 +92,6 @@ export default function TeamDetails({ teamId }: TeamPageProps) {
                             }
                         }
                     };
-
-                    console.log('newData', newData);
                     return newData;
                 },
                 {

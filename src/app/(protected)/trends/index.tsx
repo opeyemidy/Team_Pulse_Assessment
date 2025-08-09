@@ -18,7 +18,9 @@ export default function Trends() {
     const [timeRange, setTimeRange] = useState('7')
     const [viewMode, setViewMode] = useState<'sentiment' | 'teams'>('sentiment')
 
-    const { data, isLoading } = useRequest<{ data: AnalyticsData[] }>(`/analytics?days=${timeRange}`)
+    const { data, isLoading } = useRequest<{ data: AnalyticsData[] }>(`/analytics?days=${timeRange}`, {
+        revalidateOnFocus: false,
+    })
 
     const trendData = data?.data || []
     const handleExport = () => {
