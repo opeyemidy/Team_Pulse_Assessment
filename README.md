@@ -4,7 +4,7 @@ An internal tool for managing teams and tracking employee sentiment, built with 
 
 ## 🌐 Live Demo
 
-**[View Live Demo →](https://your-demo-link.vercel.app)**
+**[View Live Demo →](https://team-pulse-assessment.vercel.app)**
 
 ### Demo Credentials
 
