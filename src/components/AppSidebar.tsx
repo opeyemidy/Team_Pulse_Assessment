@@ -1,6 +1,6 @@
+"use client"
 import { BarChart3, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
 
 import {
   Sidebar,
@@ -13,13 +13,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { routes } from "@/app/routes"
+import { logoutAction } from "@/actions/auth"
+import { useSidebar } from "@/components/ui/sidebar"
+import { useEffect } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function AppSidebar() {
+  const { setOpenMobile } = useSidebar()
+  const isMobile = useIsMobile()
   const pathname = usePathname()
-  const router = useRouter()
-  const { toast } = useToast()
   const currentPath = pathname
   const collapsed = false // state === "collapsed"
 
@@ -27,16 +31,11 @@ export function AppSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated")
-    localStorage.removeItem("userEmail")
-    toast({
-      title: "Logged out successfully",
-      description: "See you next time!",
-    })
-    router.push("/login")
-  }
-
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }, [currentPath, isMobile, setOpenMobile])
   return (
     <Sidebar
       className={collapsed ? "w-14" : "w-64"}
@@ -75,14 +74,18 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <div className="mt-auto p-4 border-t border-sidebar-border">
-          <Button
-            variant="ghost"
-            onClick={handleLogout}
-            className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <LogOut className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">Logout</span>}
-          </Button>
+
+          <form action={logoutAction}>
+            <Button
+              variant="ghost"
+              type="submit"
+              className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+              {!collapsed && <span className="ml-2">Logout</span>}
+            </Button>
+          </form>
+
         </div>
       </SidebarContent>
     </Sidebar>
