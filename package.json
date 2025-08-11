@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate --data-proxy",
+    "vercel-build": "prisma generate && next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
