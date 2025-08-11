@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prisma:seed": "tsx prisma/seed.ts",
     "postinstall": "npm run prisma:generate && next build",
-    "prisma:generate": "prisma generate --schema=./packages/db/schema.prisma",
+    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma",
     "vercel-build": "npm run prisma:generate && next build"
   },
   "prisma": {
