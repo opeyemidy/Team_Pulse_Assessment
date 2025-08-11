@@ -4,7 +4,7 @@ An internal tool for managing teams and tracking employee sentiment, built with 
 
 ## 🌐 Live Demo
 
-**[View Live Demo →](https://team-pulse-assessment.vercel.app)**
+**[View Live Demo →](https://team-pulse-assessment.onrender.com)**
 
 ### Demo Credentials
 
@@ -173,7 +173,7 @@ model Settings {
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/opeyemidy/Team_Pulse_Assessment.git
    cd teampulse
    ```
 
