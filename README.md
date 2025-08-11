@@ -173,7 +173,7 @@ model Settings {
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/opeyemidy/Team_Pulse_Assessment.git
    cd teampulse
    ```
 
